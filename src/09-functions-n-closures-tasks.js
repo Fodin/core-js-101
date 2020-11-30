@@ -81,9 +81,21 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  let result;
+  // eslint-disable-next-line no-return-assign
+  return () => result || (result = func());
 }
+
+/* function memoize(func) {
+  let result;
+  return () => {
+    if (!result) {
+      result = func();
+    }
+    return result;
+  };
+} */
 
 
 /**
@@ -101,8 +113,19 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  let counter = 0;
+  let res;
+  const f = () => {
+    try {
+      res = func();
+    } catch (e) {
+      counter += 1;
+      if (counter < attempts) f();
+    }
+    return res;
+  };
+  return f;
 }
 
 
@@ -169,9 +192,19 @@ function partialUsingArguments(/* fn, ...args1 */) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
+function getIdGeneratorFunction(startFrom) {
+  let id = startFrom;
+  // eslint-disable-next-line no-return-assign
+  return () => (id += 1) - 1;
 }
+
+/* function getIdGeneratorFunction(startFrom) {
+  let id = startFrom;
+  return () => {
+    id += 1;
+    return id - 1;
+  };
+} */
 
 
 module.exports = {
