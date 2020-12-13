@@ -117,32 +117,75 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  str: '',
+
+  element(value) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${this.str}${value}`;
+    b.order = 1;
+    this.test(b.order);
+    return b;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${this.str}#${value}`;
+    b.order = 2;
+    this.test(b.order);
+    return b;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${this.str}.${value}`;
+    b.order = 3;
+    this.test(b.order);
+    return b;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${this.str}[${value}]`;
+    b.order = 4;
+    this.test(b.order);
+    return b;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${this.str}:${value}`;
+    b.order = 5;
+    this.test(b.order);
+    return b;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${this.str}::${value}`;
+    b.order = 6;
+    this.test(b.order);
+    return b;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const b = Object.create(cssSelectorBuilder);
+    b.str = `${selector1.str} ${combinator} ${selector2.str}`;
+    return b;
+  },
+
+  test(item) {
+    if (this.order === item && [1, 2, 6].includes(item)) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+    this.testOrder(item);
+  },
+
+  stringify() {
+    return this.str;
+  },
+
+  testOrder(item) {
+    if (this.order > item) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
   },
 };
 
