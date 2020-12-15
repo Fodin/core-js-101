@@ -127,38 +127,26 @@ const cssSelectorBuilder = {
     }
 
     const builder = Object.create(cssSelectorBuilder);
-    builder.str = `${this.str}${value}`;
+    builder.str = this.str + value;
     builder.order = order;
     return builder;
   },
 
-  element(value, order = 1) {
-    return this.createItem(value, order);
-  },
+  element(value) { return this.createItem(value, 1); },
 
-  id(value, order = 2) {
-    return this.createItem(`#${value}`, order);
-  },
+  id(value) { return this.createItem(`#${value}`, 2); },
 
-  class(value, order = 3) {
-    return this.createItem(`.${value}`, order);
-  },
+  class(value) { return this.createItem(`.${value}`, 3); },
 
-  attr(value, order = 4) {
-    return this.createItem(`[${value}]`, order);
-  },
+  attr(value) { return this.createItem(`[${value}]`, 4); },
 
-  pseudoClass(value, order = 5) {
-    return this.createItem(`:${value}`, order);
-  },
+  pseudoClass(value) { return this.createItem(`:${value}`, 5); },
 
-  pseudoElement(value, order = 6) {
-    return this.createItem(`::${value}`, order);
-  },
+  pseudoElement(value) { return this.createItem(`::${value}`, 6); },
 
   combine(selector1, combinator, selector2) {
     const b = Object.create(cssSelectorBuilder);
-    b.str = `${selector1.str} ${combinator} ${selector2.str}`;
+    b.str = [selector1.str, combinator, selector2.str].join` `;
     return b;
   },
 
