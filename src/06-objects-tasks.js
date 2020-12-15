@@ -119,52 +119,41 @@ function fromJSON(proto, json) {
 const cssSelectorBuilder = {
   str: '',
 
-  element(value) {
-    const b = Object.create(cssSelectorBuilder);
-    b.str = `${this.str}${value}`;
-    b.order = 1;
-    this.test(b.order);
-    return b;
+  createItem(value, order) {
+    if (this.order === order && [1, 2, 6].includes(order)) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    } else if (this.order > order) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    const builder = Object.create(cssSelectorBuilder);
+    builder.str = `${this.str}${value}`;
+    builder.order = order;
+    return builder;
   },
 
-  id(value) {
-    const b = Object.create(cssSelectorBuilder);
-    b.str = `${this.str}#${value}`;
-    b.order = 2;
-    this.test(b.order);
-    return b;
+  element(value, order = 1) {
+    return this.createItem(value, order);
   },
 
-  class(value) {
-    const b = Object.create(cssSelectorBuilder);
-    b.str = `${this.str}.${value}`;
-    b.order = 3;
-    this.test(b.order);
-    return b;
+  id(value, order = 2) {
+    return this.createItem(`#${value}`, order);
   },
 
-  attr(value) {
-    const b = Object.create(cssSelectorBuilder);
-    b.str = `${this.str}[${value}]`;
-    b.order = 4;
-    this.test(b.order);
-    return b;
+  class(value, order = 3) {
+    return this.createItem(`.${value}`, order);
   },
 
-  pseudoClass(value) {
-    const b = Object.create(cssSelectorBuilder);
-    b.str = `${this.str}:${value}`;
-    b.order = 5;
-    this.test(b.order);
-    return b;
+  attr(value, order = 4) {
+    return this.createItem(`[${value}]`, order);
   },
 
-  pseudoElement(value) {
-    const b = Object.create(cssSelectorBuilder);
-    b.str = `${this.str}::${value}`;
-    b.order = 6;
-    this.test(b.order);
-    return b;
+  pseudoClass(value, order = 5) {
+    return this.createItem(`:${value}`, order);
+  },
+
+  pseudoElement(value, order = 6) {
+    return this.createItem(`::${value}`, order);
   },
 
   combine(selector1, combinator, selector2) {
@@ -173,22 +162,10 @@ const cssSelectorBuilder = {
     return b;
   },
 
-  test(item) {
-    if (this.order === item && [1, 2, 6].includes(item)) {
-      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
-    }
-    this.testOrder(item);
-  },
-
   stringify() {
     return this.str;
   },
-
-  testOrder(item) {
-    if (this.order > item) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
-  },
 };
-
 
 module.exports = {
   Rectangle,
