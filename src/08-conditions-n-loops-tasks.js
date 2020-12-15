@@ -254,7 +254,8 @@ function reverseInteger(num) {
 function getDigitalRoot(number) {
   let n = number;
   while (n > 9) {
-    n = n.toString().split``.reduce((acc, num) => acc + +num, 0);
+    // n = n.toString().split``.reduce((acc, num) => acc + +num, 0); // Another solution
+    n = Math.floor(n / 10) + (n % 10);
   }
 
   return n;

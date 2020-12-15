@@ -87,7 +87,7 @@ function memoize(func) {
   return () => result || (result = func());
 }
 
-/* function memoize(func) {
+/* function memoize(func) { // Another solution
   let result;
   return () => {
     if (!result) {
@@ -175,10 +175,7 @@ function logger(func, logFunc) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(fn, ...args1) {
-  return (...args) => fn(...args1, ...args);
-}
-
+const partialUsingArguments = (fn, ...args1) => (...args) => fn(...args1, ...args);
 
 /**
  * Returns the id generator function that returns next integer starting
@@ -203,7 +200,7 @@ function getIdGeneratorFunction(startFrom) {
   return () => (id += 1) - 1;
 }
 
-/* function getIdGeneratorFunction(startFrom) {
+/* function getIdGeneratorFunction(startFrom) { // Another solution
   let id = startFrom;
   return () => {
     id += 1;
